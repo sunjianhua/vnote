@@ -77,6 +77,10 @@ void VNote::initPalette(QPalette palette)
     m_palette.append(QPair<QString, QString>("Teal3", "#4DB6AC"));
     m_palette.append(QPair<QString, QString>("Teal4", "#26A69A"));
     m_palette.append(QPair<QString, QString>("Teal5", "#009688"));
+    m_palette.append(QPair<QString, QString>("Teal6", "#00897B"));
+    m_palette.append(QPair<QString, QString>("Teal7", "#00796B"));
+    m_palette.append(QPair<QString, QString>("Teal8", "#00695C"));
+    m_palette.append(QPair<QString, QString>("Teal9", "#004D40"));
 
     m_palette.append(QPair<QString, QString>("Indigo0", "#E8EAF6"));
     m_palette.append(QPair<QString, QString>("Indigo1", "#C5CAE9"));
@@ -272,7 +276,7 @@ const QString &VNote::getMonospacedFont() const
     return font;
 }
 
-VFile *VNote::getOrphanFile(const QString &p_path)
+VFile *VNote::getOrphanFile(const QString &p_path, bool p_modifiable)
 {
     if (p_path.isEmpty()) {
         return NULL;
@@ -289,7 +293,7 @@ VFile *VNote::getOrphanFile(const QString &p_path)
     // TODO: Clean up unopened file here.
 
     // Create a VOrphanFile for p_path.
-    VOrphanFile *file = new VOrphanFile(p_path, this);
+    VOrphanFile *file = new VOrphanFile(p_path, this, p_modifiable);
     m_externalFiles.append(file);
     return file;
 }

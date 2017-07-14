@@ -4,12 +4,12 @@
 #include "vfile.h"
 
 // VOrphanFile is file not belong to any notebooks or directories.
-// Given the path of the file, VNote could load its content as read-only.
 class VOrphanFile : public VFile
 {
     Q_OBJECT
 public:
-    VOrphanFile(const QString &p_path, QObject *p_parent);
+    VOrphanFile(const QString &p_path, QObject *p_parent, bool p_modifiable);
+
     bool open() Q_DECL_OVERRIDE;
     QString retrivePath() const Q_DECL_OVERRIDE;
     QString retriveRelativePath() const Q_DECL_OVERRIDE;

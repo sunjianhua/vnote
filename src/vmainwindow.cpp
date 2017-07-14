@@ -616,10 +616,32 @@ void VMainWindow::initFileMenu()
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->setToolTipsVisible(true);
 
+    // Open external files.
+    QAction *openAct = new QAction(tr("&Open"), this);
+    openAct->setToolTip(tr("Open external file to edit"));
+    connect(openAct, &QAction::triggered,
+            this, [this](){
+                static QString lastPath = QDir::homePath();
+                QStringList files = QFileDialog::getOpenFileNames(this,
+                                                                  tr("Select Files (HTML or Markdown) To Open"),
+                                                                  lastPath);
+
+                if (files.isEmpty()) {
+                    return;
+                }
+
+                // Update lastPath
+                lastPath = QFileInfo(files[0]).path();
+
+                openExternalFiles(files);
+            });
+
+    fileMenu->addAction(openAct);
+
     // Import notes from files.
     m_importNoteAct = newAction(QIcon(":/resources/icons/import_note.svg"),
                                 tr("&Import Notes From Files"), this);
-    m_importNoteAct->setToolTip(tr("Import notes from external files into current folder"));
+    m_importNoteAct->setToolTip(tr("Import notes from external files into current folder by copy"));
     connect(m_importNoteAct, &QAction::triggered,
             this, &VMainWindow::importNoteFromFile);
     m_importNoteAct->setEnabled(false);
@@ -952,6 +974,7 @@ void VMainWindow::importNoteFromFile()
     if (files.isEmpty()) {
         return;
     }
+
     // Update lastPath
     lastPath = QFileInfo(files[0]).path();
 
@@ -1695,7 +1718,8 @@ void VMainWindow::shortcutHelp()
     if (locale == "zh_CN") {
         docName = VNote::c_shortcutsDocFile_zh;
     }
-    VFile *file = vnote->getOrphanFile(docName);
+
+    VFile *file = vnote->getOrphanFile(docName, false);
     editArea->openFile(file, OpenFileMode::Read);
 }
 
@@ -1779,4 +1803,9 @@ void VMainWindow::handleVimStatusUpdated(const VVim *p_vim)
     } else {
         m_vimIndicator->show();
     }
+}
+
+void VMainWindow::openExternalFiles(const QStringList &p_files)
+{
+    qDebug() << "open external files" << p_files;
 }

@@ -35,7 +35,10 @@ public:
     virtual QString retrivePath() const;
     virtual QString retriveRelativePath() const;
     virtual QString retriveBasePath() const;
+
+    // The path of the image folder.
     virtual QString retriveImagePath() const;
+
     bool isModified() const;
     bool isModifiable() const;
     bool isOpened() const;

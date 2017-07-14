@@ -14,12 +14,19 @@ VTabIndicator::VTabIndicator(QWidget *p_parent)
 void VTabIndicator::setupUI()
 {
     m_docTypeLabel = new QLabel(this);
-    m_readonlyLabel = new QLabel(tr("<span style=\"font-weight:bold; color:red;\">ReadOnly</span>"),
-                                 this);
+    m_docTypeLabel->setProperty("ColorGreyLabel", true);
+
+    m_readonlyLabel = new QLabel(tr("ReadOnly"), this);
+    m_readonlyLabel->setProperty("ColorRedLabel", true);
+
+    m_externalLabel = new QLabel(tr("External"), this);
+    m_externalLabel->setProperty("ColorTealLabel", true);
+
     m_cursorLabel = new QLabel(this);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
     mainLayout->addWidget(m_cursorLabel);
+    mainLayout->addWidget(m_externalLabel);
     mainLayout->addWidget(m_readonlyLabel);
     mainLayout->addWidget(m_docTypeLabel);
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -61,7 +68,8 @@ void VTabIndicator::update(const VEditTabInfo &p_info)
     const VEditTab *editTab = NULL;
     const VFile *file = NULL;
     DocType docType = DocType::Html;
-    bool readonly = true;
+    bool readonly = false;
+    bool external = false;
     QString cursorStr;
 
     if (p_info.m_editTab)
@@ -70,6 +78,7 @@ void VTabIndicator::update(const VEditTabInfo &p_info)
         file = editTab->getFile();
         docType = file->getDocType();
         readonly = !file->isModifiable();
+        external = file->getType() == FileType::Orphan;
 
         if (editTab->isEditMode()) {
             int line = p_info.m_cursorBlockNumber + 1;
@@ -94,4 +103,5 @@ void VTabIndicator::update(const VEditTabInfo &p_info)
 
     m_docTypeLabel->setText(docTypeToString(docType));
     m_readonlyLabel->setVisible(readonly);
+    m_externalLabel->setVisible(external);
 }
