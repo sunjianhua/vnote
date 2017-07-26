@@ -661,8 +661,8 @@ void VMainWindow::initFileMenu()
 
     // Import notes from files.
     m_importNoteAct = newAction(QIcon(":/resources/icons/import_note.svg"),
-                                tr("&Import Notes From Files"), this);
-    m_importNoteAct->setToolTip(tr("Import notes from external files into current folder by copy"));
+                                tr("&New Notes From Files"), this);
+    m_importNoteAct->setToolTip(tr("Create notes from external files in current folder by copy"));
     connect(m_importNoteAct, &QAction::triggered,
             this, &VMainWindow::importNoteFromFile);
     m_importNoteAct->setEnabled(false);
@@ -996,7 +996,7 @@ void VMainWindow::importNoteFromFile()
 {
     static QString lastPath = QDir::homePath();
     QStringList files = QFileDialog::getOpenFileNames(this,
-                                                      tr("Select Files (HTML or Markdown) To Import"),
+                                                      tr("Select Files (HTML or Markdown) To Create Notes"),
                                                       lastPath);
     if (files.isEmpty()) {
         return;
@@ -1012,13 +1012,15 @@ void VMainWindow::importNoteFromFile()
             ++failedFiles;
         }
     }
-    QMessageBox msgBox(QMessageBox::Information, tr("Import Notes From File"),
-                       tr("Imported notes: %1 succeed, %2 failed.")
+
+    QMessageBox msgBox(QMessageBox::Information, tr("New Notes From Files"),
+                       tr("Created notes: %1 succeed, %2 failed.")
                        .arg(files.size() - failedFiles).arg(failedFiles),
                        QMessageBox::Ok, this);
     if (failedFiles > 0) {
-        msgBox.setInformativeText(tr("Fail to import files maybe due to name conflicts."));
+        msgBox.setInformativeText(tr("Fail to create notes from files maybe due to name conflicts."));
     }
+
     msgBox.exec();
 }
 
@@ -1555,6 +1557,7 @@ void VMainWindow::closeEvent(QCloseEvent *event)
             vconfig.setMinimizeToSystemTray(0);
             isExit = true;
         } else {
+            event->ignore();
             return;
         }
     }

@@ -438,8 +438,14 @@ void VEditWindow::updateTabInfo(int p_index)
     setTabText(p_index, generateTabText(p_index, file->getName(),
                                         file->isModified(), file->isModifiable()));
     setTabToolTip(p_index, generateTooltip(file));
-    setTabIcon(p_index, editMode ? QIcon(":/resources/icons/editing.svg") :
-               QIcon(":/resources/icons/reading.svg"));
+
+    QString iconUrl(":/resources/icons/reading.svg");
+    if (editMode) {
+        iconUrl = file->isModified() ? ":/resources/icons/editing_modified.svg"
+                                     : ":/resources/icons/editing.svg";
+    }
+
+    setTabIcon(p_index, QIcon(iconUrl));
 }
 
 void VEditWindow::updateAllTabsSequence()
